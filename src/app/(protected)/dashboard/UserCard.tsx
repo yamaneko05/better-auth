@@ -30,9 +30,9 @@ export default function UserCard({
   const [isSignOut, setIsSignOut] = useState(false);
 
   return (
-    <Card>
+    <Card className="w-full max-w-xs">
       <CardHeader>
-        <CardTitle>ユーザー</CardTitle>
+        <CardTitle>ログイン中のユーザー</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="text-xl">{session.user.name}</div>

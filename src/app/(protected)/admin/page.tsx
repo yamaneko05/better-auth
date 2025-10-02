@@ -12,8 +12,11 @@ export default async function AdminPage() {
   if (session?.user.role != "admin") redirect("/sign-in");
 
   return (
-    <div className="p-2">
-      <CreateUserDialog />
+    <div className="p-3">
+      <h2 className="text-2xl font-bold">ユーザー管理</h2>
+      <div className="mt-6">
+        <CreateUserDialog />
+      </div>
       <div className="mt-6">
         <UsersTable />
       </div>
