@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth } from "@/utils/auth";
-import { authClient } from "@/utils/auth-client";
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

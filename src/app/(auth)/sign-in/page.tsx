@@ -1,4 +1,4 @@
-import SigninForm from "@/app/(auth)/sign-in/SignInForm";
+import { SigninForm } from "@/app/(auth)/sign-in/SignInForm";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function SignInPage() {

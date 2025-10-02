@@ -1,36 +1,32 @@
 "use client";
 
-import { authClient } from "@/utils/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { Label } from "@/components/ui/label";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import FormErrorAlert from "../../../components/common/FormErrorAlert";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FormErrorAlert } from "@/components/common/FormErrorAlert";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
+import { signInSchema } from "@/schemas";
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-export default function SigninForm() {
+export function SigninForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
     setError,
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (formData: z.infer<typeof schema>) => {
+  const onSubmit = async (formData: z.infer<typeof signInSchema>) => {
     const { data, error } = await authClient.signIn.email(
       {
         email: formData.email,

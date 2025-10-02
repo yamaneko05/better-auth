@@ -5,21 +5,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { Label } from "@/components/ui/label";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import { FormErrorAlert } from "../../../components/common/FormErrorAlert";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FormErrorAlert } from "@/components/common/FormErrorAlert";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
-import { signUpSchema } from "@/schemas";
+import { createUserSchema } from "@/schemas";
+import { useQueryClient } from "@tanstack/react-query";
 
-export function SignUpForm() {
+export function CreateUserForm() {
+  const queryClient = useQueryClient();
+
   const {
-    register,
     formState: { errors },
+    register,
     handleSubmit,
     setError,
   } = useForm({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(createUserSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -27,26 +30,22 @@ export function SignUpForm() {
     },
   });
 
-  const onSubmit = async (formData: z.infer<typeof signUpSchema>) => {
-    const { data, error } = await authClient.signUp.email(
-      {
+  const onSubmit = async (formData: z.infer<typeof createUserSchema>) => {
+    setIsLoading(true);
+    try {
+      await authClient.admin.createUser({
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        callbackURL: "/dashboard",
-      },
-      {
-        onRequest: () => {
-          setIsLoading(true);
-        },
-        onSuccess: () => {
-          setIsLoading(false);
-        },
-        onError: (ctx) => {
-          setError("root", { message: ctx.error.message });
-        },
-      }
-    );
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+    } catch (error: any) {
+      setError("root", { message: error.message });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const [isLoading, setIsLoading] = useState(false);

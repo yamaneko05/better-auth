@@ -1,11 +1,7 @@
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
-export default function FormErrorAlert({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function FormErrorAlert({ children }: { children: React.ReactNode }) {
   return (
     <Alert variant={"destructive"}>
       <AlertCircleIcon />
