@@ -10,10 +10,17 @@ import { Button } from "@/components/ui/button";
 import { FormErrorAlert } from "@/components/common/FormErrorAlert";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
-import { createUserSchema } from "@/schemas";
+import { editUserSchema } from "@/schemas";
 import { useQueryClient } from "@tanstack/react-query";
+import { UserWithRole } from "better-auth/plugins";
 
-export function CreateUserForm({ onCreated }: { onCreated: () => void }) {
+export function EditUserForm({
+  user,
+  onUpdated,
+}: {
+  user: UserWithRole;
+  onUpdated: () => void;
+}) {
   const queryClient = useQueryClient();
 
   const {
@@ -22,26 +29,27 @@ export function CreateUserForm({ onCreated }: { onCreated: () => void }) {
     handleSubmit,
     setError,
   } = useForm({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(editUserSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      name: "",
+      email: user.email,
+      name: user.name,
     },
   });
 
-  const onSubmit = async (formData: z.infer<typeof createUserSchema>) => {
+  const onSubmit = async (formData: z.infer<typeof editUserSchema>) => {
     setIsLoading(true);
     try {
-      await authClient.admin.createUser({
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
+      await authClient.admin.updateUser({
+        userId: user.id,
+        data: {
+          email: formData.email,
+          name: formData.name,
+        },
       });
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
-      onCreated();
+      onUpdated();
     } catch (error: any) {
       setError("root", { message: error.message });
     } finally {
@@ -59,13 +67,6 @@ export function CreateUserForm({ onCreated }: { onCreated: () => void }) {
           <Input {...register("email")} />
           {errors.email?.message && (
             <FormErrorAlert>{errors.email?.message}</FormErrorAlert>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>パスワード</Label>
-          <Input {...register("password")} />
-          {errors.password?.message && (
-            <FormErrorAlert>{errors.password?.message}</FormErrorAlert>
           )}
         </div>
         <div className="flex flex-col gap-2">

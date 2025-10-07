@@ -1,12 +1,15 @@
 import z from "zod";
 
-export const signInSchema = z.object({
+const userSchemaBase = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-});
-
-export const signUpSchema = signInSchema.extend({
   name: z.string().min(1),
 });
 
-export const createUserSchema = signUpSchema;
+export const signInSchema = userSchemaBase.omit({ name: true });
+
+export const signUpSchema = userSchemaBase.clone();
+
+export const createUserSchema = userSchemaBase.clone();
+
+export const editUserSchema = userSchemaBase.omit({ password: true });

@@ -11,10 +11,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
+  if (request.nextUrl.pathname == "/admin" && session?.user.role != "admin") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
   runtime: "nodejs",
-  matcher: ["/dashboard"], // Apply middleware to specific routes
+  matcher: ["/dashboard", "/admin"], // Apply middleware to specific routes
 };
