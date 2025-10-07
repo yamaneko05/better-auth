@@ -2,17 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
+import { User } from "better-auth";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function UserCard({
-  session,
-}: {
-  session: typeof auth.$Infer.Session;
-}) {
+export default function UserCard({ user }: { user: User }) {
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -35,8 +31,8 @@ export default function UserCard({
         <CardTitle>ログイン中のユーザー</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-xl">{session.user.name}</div>
-        <div className="text-gray-500">{session.user.email}</div>
+        <div className="text-xl">{user.name}</div>
+        <div className="text-gray-500">{user.email}</div>
         <div className="mt-6">
           <Button onClick={handleSignOut} disabled={isSignOut}>
             {isSignOut && <Loader2Icon className="animate-spin" />}

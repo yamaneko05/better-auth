@@ -1,21 +1,15 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { authClient } from "@/lib/auth-client";
 import UserCard from "./UserCard";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
-export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) redirect("/sign-in");
+export default function DashboardPage() {
+  const { data: session } = authClient.useSession();
 
   return (
     <div className="p-2">
       <h2 className="font-bold text-2xl">ダッシュボード</h2>
-      <div className="mt-6">
-        <UserCard session={session} />
-      </div>
+      <div className="mt-6">{session && <UserCard user={session.user} />}</div>
     </div>
   );
 }
